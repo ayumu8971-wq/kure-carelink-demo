@@ -1,0 +1,3 @@
+.roadmap { grid-template-columns:1fr 18px 1fr 18px 1fr 18px 1fr; }
+@media(max-width:800px) { .roadmap { grid-template-columns:1fr; } }
+@media print { .roadmap { grid-template-columns:1fr 5mm 1fr 5mm 1fr 5mm 1fr; } }
