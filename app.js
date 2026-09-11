@@ -18,8 +18,9 @@ let records = [
 
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => [...document.querySelectorAll(s)];
-const viewTitles = {dashboard:'施設ホーム',residents:'入居者情報',records:'申し送り・記録',schedule:'在所予定'};
+const viewTitles = {dashboard:'施設ホーム',residents:'入居者情報',records:'申し送り・記録',ocr:'紙のOCR読取',schedule:'在所予定'};
 let activeCategory = 'all';
+let ocrImageSource = null;
 
 function selectedFacility(){ return $('#facilitySelect').value; }
 function visibleResidents(){ const f=selectedFacility(); return residents.filter(r=>f==='all'||r.facilityKey===f); }
@@ -83,6 +84,48 @@ function saveRecord(e){
   $('#recordDialog').close();renderAll();showToast('記録を保存しました（デモ）');
 }
 function showToast(message){const t=$('#toast');t.textContent=message;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400)}
+function setOcrImage(source){
+  if(ocrImageSource?.startsWith('blob:')) URL.revokeObjectURL(ocrImageSource);
+  ocrImageSource=source; $('#ocrPreview').src=source; $('#uploadZone').classList.add('has-image');
+  $('#sourceState').textContent='画像を選択済み'; $('#sourceState').classList.add('ready'); $('#runOcrButton').disabled=false;
+  $('#ocrResult').hidden=true; $('#ocrPlaceholder').hidden=false; $('#ocrConfidence').textContent='待機中'; $('#ocrConfidence').classList.remove('ready');
+}
+function loadOcrFile(file){
+  if(!file||!file.type.startsWith('image/')){showToast('画像ファイルを選択してください');return}
+  if(file.size>12*1024*1024){showToast('画像は12MB以下にしてください');return}
+  setOcrImage(URL.createObjectURL(file));
+}
+function createSamplePaper(){
+  const canvas=document.createElement('canvas'); canvas.width=1000; canvas.height=700; const c=canvas.getContext('2d');
+  c.fillStyle='#fffdf8';c.fillRect(0,0,canvas.width,canvas.height);c.strokeStyle='#9b9b91';c.lineWidth=2;c.strokeRect(35,35,930,630);
+  c.fillStyle='#283330';c.font='bold 42px sans-serif';c.fillText('申し送り記録（デモ）',70,105);c.font='26px sans-serif';
+  ['日付：2026年9月11日','入居者：デモ入居者A','分類：生活','記録：本日の申し送り事項のサンプルです。','確認者：スタッフA'].forEach((line,i)=>c.fillText(line,80,190+i*90));
+  c.strokeStyle='#d5d5ca';for(let y=220;y<650;y+=90){c.beginPath();c.moveTo(65,y);c.lineTo(935,y);c.stroke()}
+  setOcrImage(canvas.toDataURL('image/png')); showToast('サンプル帳票をセットしました');
+}
+async function runOcr(){
+  if(!ocrImageSource)return;
+  $('#runOcrButton').disabled=true; $('#ocrProgress').hidden=false; $('#ocrProgressBar').value=0; $('#ocrProgressLabel').textContent='OCRエンジンを準備中...';
+  try{
+    if(!window.Tesseract) throw new Error('OCRライブラリを読み込めませんでした');
+    const result=await Tesseract.recognize(ocrImageSource,'jpn+eng',{logger:m=>{
+      if(typeof m.progress==='number'){const p=Math.round(m.progress*100);$('#ocrProgressBar').value=p;$('#ocrProgressPercent').textContent=`${p}%`}
+      if(m.status==='recognizing text')$('#ocrProgressLabel').textContent='文字を読み取っています...';
+    }});
+    const text=result.data.text.trim()||'文字を認識できませんでした。画像を撮り直すか、文章を直接修正してください。';
+    $('#ocrText').value=text; $('#ocrResident').innerHTML=visibleResidents().map(r=>`<option value="${r.id}">${r.name}（${r.facility}）</option>`).join('');
+    const match=residents.find(r=>text.includes(r.name));if(match)$('#ocrResident').value=String(match.id);
+    $('#ocrCategory').value=text.includes('重要')?'重要':text.includes('健康')?'健康':'生活';
+    const confidence=Math.round(result.data.confidence);$('#ocrConfidence').textContent=`認識精度 ${confidence}%`;$('#ocrConfidence').classList.add('ready');
+    $('#ocrPlaceholder').hidden=true;$('#ocrResult').hidden=false;$('#ocrProgressLabel').textContent='読み取り完了';
+  }catch(error){console.error(error);showToast('OCRに失敗しました。通信環境または画像を確認してください');$('#ocrProgressLabel').textContent='読み取りに失敗しました'}
+  finally{$('#runOcrButton').disabled=false}
+}
+function saveOcrRecord(){
+  const text=$('#ocrText').value.trim();if(!text){showToast('読み取り文章を入力してください');return}
+  records.unshift({id:Date.now(),residentId:Number($('#ocrResident').value),category:$('#ocrCategory').value,text,author:'OCR取込・デモ管理者',time:'たった今'});
+  renderAll();showView('records');showToast('OCR結果を記録に追加しました（デモ）');
+}
 function exportCsv(){
   const rows=[['氏名','ふりがな','年齢','施設','居室','状態','要介護度','主担当'],...visibleResidents().map(r=>[r.name,r.kana,r.age,r.facility,r.room,r.status,r.care,r.staff])];
   const csv='\ufeff'+rows.map(row=>row.map(v=>`"${String(v).replaceAll('"','""')}"`).join(',')).join('\n');
@@ -103,5 +146,12 @@ $('#exportButton').onclick=exportCsv;$('#printButton').onclick=()=>window.print(
 $('#newResidentButton').onclick=()=>showToast('本番では登録フォームが開きます');
 $('#voiceButton').onclick=()=>{$('#recordText').value='音声から変換された申し送り内容のサンプルです。';showToast('音声入力のデモを反映しました')};
 $('#menuButton').onclick=()=>$('#sidebar').classList.toggle('open');
+$('#uploadZone').onclick=()=>$('#ocrFile').click();
+$('#uploadZone').onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();$('#ocrFile').click()}};
+$('#ocrFile').onchange=e=>loadOcrFile(e.target.files[0]);
+$('#uploadZone').ondragover=e=>{e.preventDefault();$('#uploadZone').classList.add('dragover')};
+$('#uploadZone').ondragleave=()=>$('#uploadZone').classList.remove('dragover');
+$('#uploadZone').ondrop=e=>{e.preventDefault();$('#uploadZone').classList.remove('dragover');loadOcrFile(e.dataTransfer.files[0])};
+$('#samplePaperButton').onclick=createSamplePaper;$('#runOcrButton').onclick=runOcr;$('#saveOcrButton').onclick=saveOcrRecord;
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDrawer()});
 renderAll();

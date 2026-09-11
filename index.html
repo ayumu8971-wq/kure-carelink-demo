@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="ocr.css" />
 </head>
 <body>
   <div class="demo-banner">社内検討用デモ｜表示されている氏名・情報はすべて架空です</div>
@@ -24,6 +25,7 @@
         <button class="nav-item active" data-view="dashboard"><span>⌂</span>ホーム</button>
         <button class="nav-item" data-view="residents"><span>♙</span>入居者情報</button>
         <button class="nav-item" data-view="records"><span>▤</span>申し送り・記録</button>
+        <button class="nav-item" data-view="ocr"><span>▧</span>紙を読み取る</button>
         <button class="nav-item" data-view="schedule"><span>▦</span>在所予定</button>
       </nav>
 
@@ -113,6 +115,35 @@
           <div class="record-feed" id="recordFeed"></div>
         </div>
 
+        <div class="view" id="ocrView">
+          <div class="section-heading"><div><p class="eyebrow">PAPER TO DATA</p><h2>紙の記録を読み取る</h2><p>紙を撮影するだけで文字に変換し、入居者ごとの記録として整理できます。</p></div><span class="local-badge">端末内で処理</span></div>
+          <div class="privacy-notice"><strong>デモ利用時のお願い</strong><span>公開デモです。実在する方の個人情報を含む画像は使用せず、テスト用の帳票でお試しください。</span></div>
+          <div class="ocr-layout">
+            <article class="panel ocr-source-panel">
+              <div class="panel-head"><div><p class="eyebrow">STEP 1</p><h3>紙の写真を選択</h3></div><span class="step-state" id="sourceState">未選択</span></div>
+              <div class="upload-zone" id="uploadZone" tabindex="0" role="button" aria-label="画像を選択">
+                <input type="file" id="ocrFile" accept="image/png,image/jpeg,image/webp" hidden />
+                <div class="upload-empty"><div class="upload-icon">▧</div><strong>ここに画像をドロップ</strong><span>またはクリックして写真を選択</span><small>JPG・PNG・WebP</small></div>
+                <img id="ocrPreview" alt="読み取り対象のプレビュー" />
+              </div>
+              <div class="ocr-source-actions"><button class="secondary-button" id="samplePaperButton">サンプル帳票で試す</button><button class="primary-button" id="runOcrButton" disabled>文字を読み取る</button></div>
+              <div class="ocr-progress" id="ocrProgress" hidden><div><span id="ocrProgressLabel">OCRを準備中...</span><strong id="ocrProgressPercent">0%</strong></div><progress id="ocrProgressBar" max="100" value="0"></progress></div>
+            </article>
+            <article class="panel ocr-result-panel">
+              <div class="panel-head"><div><p class="eyebrow">STEP 2</p><h3>読み取り結果を確認</h3></div><span class="confidence" id="ocrConfidence">待機中</span></div>
+              <div class="ocr-placeholder" id="ocrPlaceholder"><div>⌕</div><strong>結果はここに表示されます</strong><span>文字は保存前に修正できます。</span></div>
+              <div class="ocr-result" id="ocrResult" hidden>
+                <label>読み取った文章<textarea id="ocrText" rows="8"></textarea></label>
+                <div class="form-row"><label>入居者<select id="ocrResident"></select></label><label>分類<select id="ocrCategory"><option>生活</option><option>健康</option><option>重要</option></select></label></div>
+                <label>記録日<input type="date" id="ocrDate" value="2026-09-11" /></label>
+                <div class="detected-fields"><span>自動整理</span><p>文章を確認後、選択した入居者の記録に追加します。</p></div>
+                <button class="primary-button save-ocr-button" id="saveOcrButton">確認して記録に追加</button>
+              </div>
+            </article>
+          </div>
+          <article class="panel ocr-flow-panel"><div class="flow-step"><b>1</b><div><strong>撮影</strong><span>紙の申し送りをスマホで撮影</span></div></div><i>→</i><div class="flow-step"><b>2</b><div><strong>OCR</strong><span>日本語の文字を自動抽出</span></div></div><i>→</i><div class="flow-step"><b>3</b><div><strong>確認・修正</strong><span>読み間違いを人がチェック</span></div></div><i>→</i><div class="flow-step"><b>4</b><div><strong>蓄積</strong><span>入居者別に検索可能な記録へ</span></div></div></article>
+        </div>
+
         <div class="view" id="scheduleView">
           <div class="section-heading"><div><p class="eyebrow">LOCATION</p><h2>在所予定</h2><p>誰が・どの施設にいるかを簡単に把握するための画面です。</p></div></div>
           <article class="panel schedule-placeholder"><div class="coming-icon">▦</div><h3>簡易在所管理</h3><p>入居者情報の基盤を整えた後に、曜日固定の予定を登録できる想定です。</p><div class="phase-chips"><span class="done">第1段階 入居者情報</span><span>第2段階 在所予定</span><span>第3段階 日報・AI読取</span></div></article>
@@ -139,6 +170,7 @@
   </dialog>
 
   <div class="toast" id="toast" role="status"></div>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
