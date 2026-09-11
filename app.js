@@ -1,11 +1,33 @@
-const residents = [
-  {id:1,name:'デモ入居者A',kana:'サンプル A',age:'--',gender:'-',facility:'施設A',facilityKey:'kure',room:'201号室',status:'入居中',care:'設定例A',staff:'スタッフA',last:'本日 10:18',condition:'サンプル状態A',contact:'デモ連絡先A',phone:'非表示'},
-  {id:2,name:'デモ入居者B',kana:'サンプル B',age:'--',gender:'-',facility:'施設A',facilityKey:'kure',room:'105号室',status:'入居中',care:'設定例B',staff:'スタッフB',last:'本日 09:42',condition:'サンプル状態B',contact:'デモ連絡先B',phone:'非表示'},
-  {id:3,name:'デモ入居者C',kana:'サンプル C',age:'--',gender:'-',facility:'施設B',facilityKey:'tajima',room:'302号室',status:'入院中',care:'設定例C',staff:'スタッフC',last:'昨日 16:30',condition:'サンプル状態C',contact:'デモ連絡先C',phone:'非表示'},
-  {id:4,name:'デモ入居者D',kana:'サンプル D',age:'--',gender:'-',facility:'施設B',facilityKey:'tajima',room:'208号室',status:'外出中',care:'設定例B',staff:'スタッフA',last:'本日 08:55',condition:'サンプル状態D',contact:'デモ連絡先D',phone:'非表示'},
-  {id:5,name:'デモ入居者E',kana:'サンプル E',age:'--',gender:'-',facility:'施設A',facilityKey:'kure',room:'203号室',status:'入居中',care:'設定例C',staff:'スタッフB',last:'昨日 20:15',condition:'サンプル状態E',contact:'デモ連絡先E',phone:'非表示'},
-  {id:6,name:'デモ入居者F',kana:'サンプル F',age:'--',gender:'-',facility:'施設B',facilityKey:'tajima',room:'101号室',status:'入居中',care:'設定例A',staff:'スタッフC',last:'本日 07:50',condition:'サンプル状態F',contact:'デモ連絡先F',phone:'非表示'}
+const residentNames = [
+  ['青木 美咲','あおき みさき'],['石井 健太','いしい けんた'],['上田 和子','うえだ かずこ'],['江藤 正一','えとう しょういち'],['大西 久美子','おおにし くみこ'],
+  ['加賀谷 博','かがや ひろし'],['川村 京子','かわむら きょうこ'],['木下 誠','きのした まこと'],['久保田 洋子','くぼた ようこ'],['小林 明','こばやし あきら'],
+  ['斉藤 恵子','さいとう けいこ'],['坂本 隆','さかもと たかし'],['佐野 文子','さの ふみこ'],['島田 勇','しまだ いさむ'],['鈴木 節子','すずき せつこ'],
+  ['高木 茂','たかぎ しげる'],['田口 幸子','たぐち さちこ'],['竹内 浩','たけうち ひろし'],['千葉 美代子','ちば みよこ'],['中川 清','なかがわ きよし'],
+  ['中村 洋一','なかむら よういち'],['西尾 悦子','にしお えつこ'],['野口 修','のぐち おさむ'],['橋本 澄子','はしもと すみこ'],['原田 勝','はらだ まさる'],
+  ['平井 良子','ひらい りょうこ'],['藤田 昭夫','ふじた あきお'],['前田 弘子','まえだ ひろこ'],['松井 正雄','まつい まさお'],['三浦 富美子','みうら ふみこ'],
+  ['宮本 義男','みやもと よしお'],['村上 典子','むらかみ のりこ'],['森田 一郎','もりた いちろう'],['山内 光子','やまうち みつこ'],['山口 秀夫','やまぐち ひでお'],
+  ['横山 千鶴子','よこやま ちづこ'],['吉岡 康夫','よしおか やすお'],['和田 早苗','わだ さなえ'],['秋山 達也','あきやま たつや'],['池田 佳代','いけだ かよ'],
+  ['井上 哲夫','いのうえ てつお'],['岡本 利江','おかもと としえ'],['奥田 邦夫','おくだ くにお'],['片山 由美','かたやま ゆみ'],['金子 俊郎','かねこ としろう'],
+  ['河野 春子','こうの はるこ'],['近藤 忠','こんどう ただし'],['清水 雅子','しみず まさこ'],['杉本 稔','すぎもと みのる'],['高橋 玲子','たかはし れいこ'],
+  ['谷口 武','たにぐち たけし'],['寺田 郁子','てらだ いくこ'],['中島 守','なかじま まもる'],['長谷川 孝子','はせがわ たかこ'],['福田 和夫','ふくだ かずお'],
+  ['松本 静江','まつもと しずえ'],['水野 進','みずの すすむ'],['森川 喜美子','もりかわ きみこ'],['山下 健一','やました けんいち'],['渡辺 百合子','わたなべ ゆりこ']
 ];
+
+const residents = residentNames.map(([name,kana],index)=>{
+  const localIndex=index%30;
+  const floor=Math.floor(localIndex/10)+1;
+  const room=`${floor}${String(localIndex%10+1).padStart(2,'0')}号室`;
+  const statuses=['入居中','入居中','入居中','入居中','入院中','入居中','外出中'];
+  const conditions=['特記事項なし（サンプル）','申し送り確認済み（サンプル）','予定を確認中（サンプル）','ご家族へ連絡済み（サンプル）'];
+  const lastTimes=['本日 10:18','本日 09:42','本日 08:55','本日 07:50','昨日 20:15','昨日 16:30'];
+  return {
+    id:index+1,name,kana,age:72+(index*7)%24,gender:index%2===0?'女性':'男性',
+    facility:index<30?'施設A':'施設B',facilityKey:index<30?'kure':'tajima',room,
+    status:statuses[index%statuses.length],care:`設定例${['A','B','C'][index%3]}`,
+    staff:`スタッフ${['A','B','C','D'][index%4]}`,last:lastTimes[index%lastTimes.length],
+    condition:conditions[index%conditions.length],contact:'ご家族連絡先（サンプル）',phone:'非表示'
+  };
+});
 
 let records = [
   {id:1,residentId:2,category:'重要',text:'重要な申し送り事項のサンプルです。担当スタッフへ確認を依頼します。',author:'スタッフB',time:'本日 10:24'},
@@ -99,7 +121,7 @@ function createSamplePaper(){
   const canvas=document.createElement('canvas'); canvas.width=1000; canvas.height=700; const c=canvas.getContext('2d');
   c.fillStyle='#fffdf8';c.fillRect(0,0,canvas.width,canvas.height);c.strokeStyle='#9b9b91';c.lineWidth=2;c.strokeRect(35,35,930,630);
   c.fillStyle='#283330';c.font='bold 42px sans-serif';c.fillText('申し送り記録（デモ）',70,105);c.font='26px sans-serif';
-  ['日付：2026年9月11日','入居者：デモ入居者A','分類：生活','記録：本日の申し送り事項のサンプルです。','確認者：スタッフA'].forEach((line,i)=>c.fillText(line,80,190+i*90));
+  [`日付：2026年9月11日`,`入居者：${residents[0].name}`,'分類：生活','記録：本日の申し送り事項のサンプルです。','確認者：スタッフA'].forEach((line,i)=>c.fillText(line,80,190+i*90));
   c.strokeStyle='#d5d5ca';for(let y=220;y<650;y+=90){c.beginPath();c.moveTo(65,y);c.lineTo(935,y);c.stroke()}
   setOcrImage(canvas.toDataURL('image/png')); showToast('サンプル帳票をセットしました');
 }
