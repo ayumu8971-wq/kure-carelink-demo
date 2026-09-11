@@ -1,19 +1,19 @@
 const residents = [
-  {id:1,name:'山田 春子',kana:'やまだ はるこ',age:84,gender:'女性',facility:'呉診療所',facilityKey:'kure',room:'201号室',status:'入居中',care:'要介護3',staff:'勝山',last:'本日 10:18',condition:'食事・水分ともに良好',contact:'山田 健一（長男）',phone:'090-0000-1101'},
-  {id:2,name:'佐藤 一郎',kana:'さとう いちろう',age:79,gender:'男性',facility:'呉診療所',facilityKey:'kure',room:'105号室',status:'入居中',care:'要介護2',staff:'小林',last:'本日 09:42',condition:'歩行時のふらつきに注意',contact:'佐藤 恵（長女）',phone:'090-0000-1102'},
-  {id:3,name:'田中 和子',kana:'たなか かずこ',age:88,gender:'女性',facility:'田島ホーム',facilityKey:'tajima',room:'302号室',status:'入院中',care:'要介護4',staff:'水野',last:'昨日 16:30',condition:'9/10より経過観察入院',contact:'田中 修（二男）',phone:'090-0000-1103'},
-  {id:4,name:'鈴木 正夫',kana:'すずき まさお',age:82,gender:'男性',facility:'田島ホーム',facilityKey:'tajima',room:'208号室',status:'外出中',care:'要介護2',staff:'勝山',last:'本日 08:55',condition:'ご家族と外出・16時帰所予定',contact:'鈴木 洋子（妻）',phone:'090-0000-1104'},
-  {id:5,name:'高橋 澄江',kana:'たかはし すみえ',age:91,gender:'女性',facility:'呉診療所',facilityKey:'kure',room:'203号室',status:'入居中',care:'要介護4',staff:'小林',last:'昨日 20:15',condition:'夜間の咳込みを観察',contact:'高橋 聡（長男）',phone:'090-0000-1105'},
-  {id:6,name:'伊藤 勇',kana:'いとう いさむ',age:76,gender:'男性',facility:'田島ホーム',facilityKey:'tajima',room:'101号室',status:'入居中',care:'要介護1',staff:'水野',last:'本日 07:50',condition:'変化なし',contact:'伊藤 幸子（妻）',phone:'090-0000-1106'}
+  {id:1,name:'デモ入居者A',kana:'サンプル A',age:'--',gender:'-',facility:'施設A',facilityKey:'kure',room:'201号室',status:'入居中',care:'設定例A',staff:'スタッフA',last:'本日 10:18',condition:'サンプル状態A',contact:'デモ連絡先A',phone:'非表示'},
+  {id:2,name:'デモ入居者B',kana:'サンプル B',age:'--',gender:'-',facility:'施設A',facilityKey:'kure',room:'105号室',status:'入居中',care:'設定例B',staff:'スタッフB',last:'本日 09:42',condition:'サンプル状態B',contact:'デモ連絡先B',phone:'非表示'},
+  {id:3,name:'デモ入居者C',kana:'サンプル C',age:'--',gender:'-',facility:'施設B',facilityKey:'tajima',room:'302号室',status:'入院中',care:'設定例C',staff:'スタッフC',last:'昨日 16:30',condition:'サンプル状態C',contact:'デモ連絡先C',phone:'非表示'},
+  {id:4,name:'デモ入居者D',kana:'サンプル D',age:'--',gender:'-',facility:'施設B',facilityKey:'tajima',room:'208号室',status:'外出中',care:'設定例B',staff:'スタッフA',last:'本日 08:55',condition:'サンプル状態D',contact:'デモ連絡先D',phone:'非表示'},
+  {id:5,name:'デモ入居者E',kana:'サンプル E',age:'--',gender:'-',facility:'施設A',facilityKey:'kure',room:'203号室',status:'入居中',care:'設定例C',staff:'スタッフB',last:'昨日 20:15',condition:'サンプル状態E',contact:'デモ連絡先E',phone:'非表示'},
+  {id:6,name:'デモ入居者F',kana:'サンプル F',age:'--',gender:'-',facility:'施設B',facilityKey:'tajima',room:'101号室',status:'入居中',care:'設定例A',staff:'スタッフC',last:'本日 07:50',condition:'サンプル状態F',contact:'デモ連絡先F',phone:'非表示'}
 ];
 
 let records = [
-  {id:1,residentId:2,category:'重要',text:'歩行時に一度ふらつきあり。転倒はなく、以降は普段どおりです。移動時の見守りをお願いします。',author:'小林',time:'本日 10:24'},
-  {id:2,residentId:1,category:'健康',text:'朝食は全量摂取。水分もしっかり取られ、体調に変化はありません。',author:'勝山',time:'本日 10:18'},
-  {id:3,residentId:4,category:'生活',text:'ご家族と外出されました。16時頃に帰所予定です。',author:'水野',time:'本日 08:55'},
-  {id:4,residentId:6,category:'生活',text:'夜間は良眠。7時に起床され、穏やかに過ごされています。',author:'佐々木',time:'本日 07:50'},
-  {id:5,residentId:3,category:'重要',text:'病院より連絡あり。状態は安定しており、明日改めて経過共有予定です。',author:'水野',time:'昨日 16:30'},
-  {id:6,residentId:5,category:'健康',text:'就寝前に軽い咳込みあり。発熱なし。夜間も継続して様子観察します。',author:'小林',time:'昨日 20:15'}
+  {id:1,residentId:2,category:'重要',text:'重要な申し送り事項のサンプルです。担当スタッフへ確認を依頼します。',author:'スタッフB',time:'本日 10:24'},
+  {id:2,residentId:1,category:'健康',text:'日々の記録サンプルです。詳細な状況をこの欄に表示します。',author:'スタッフA',time:'本日 10:18'},
+  {id:3,residentId:4,category:'生活',text:'外出予定のサンプルです。16時頃に帰所予定として登録されています。',author:'スタッフC',time:'本日 08:55'},
+  {id:4,residentId:6,category:'生活',text:'生活記録のサンプルです。朝の状況を登録しています。',author:'スタッフA',time:'本日 07:50'},
+  {id:5,residentId:3,category:'重要',text:'施設間で共有する連絡事項のサンプルです。',author:'スタッフC',time:'昨日 16:30'},
+  {id:6,residentId:5,category:'健康',text:'経過確認用のサンプル記録です。',author:'スタッフB',time:'昨日 20:15'}
 ];
 
 const $ = (s) => document.querySelector(s);
@@ -101,7 +101,7 @@ $('#closeDrawer').onclick=closeDrawer;$('#drawerBackdrop').onclick=closeDrawer;
 $('#saveRecordButton').onclick=saveRecord;
 $('#exportButton').onclick=exportCsv;$('#printButton').onclick=()=>window.print();
 $('#newResidentButton').onclick=()=>showToast('本番では登録フォームが開きます');
-$('#voiceButton').onclick=()=>{$('#recordText').value='昼食後、いつも通り穏やかに過ごされています。体調に変化はありません。';showToast('音声入力のデモを反映しました')};
+$('#voiceButton').onclick=()=>{$('#recordText').value='音声から変換された申し送り内容のサンプルです。';showToast('音声入力のデモを反映しました')};
 $('#menuButton').onclick=()=>$('#sidebar').classList.toggle('open');
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDrawer()});
 renderAll();
